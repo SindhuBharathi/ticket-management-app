@@ -2,6 +2,8 @@ package com.revature.dao;
 
 import java.util.List;
 
+import org.apache.commons.mail.EmailException;
+
 import com.revature.exception.PersistenceException;
 import com.revature.model.Department;
 import com.revature.model.Priority;
@@ -10,7 +12,7 @@ import com.revature.model.User;
 
 public class TestTicketDAO {
 
-	public static void main(String[] args) throws PersistenceException {
+	public static void main(String[] args) throws PersistenceException, EmailException {
 		Ticket t = new Ticket();
 		TicketDAO ticketDAO = new TicketDAO();
 		

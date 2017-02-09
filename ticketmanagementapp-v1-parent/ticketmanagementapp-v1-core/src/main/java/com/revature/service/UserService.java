@@ -8,7 +8,7 @@ import com.revature.model.TicketList;
 
 public class UserService {
 	UserLoginService loginService = new UserLoginService();
-	TicketService ticketService = new TicketService();
+	UserTicketService ticketService = new UserTicketService();
 
 	public String create(String emailId, String password, String subject, String description, String department, String priority) throws ServiceException {
 		if (loginService.login(emailId, password)) {
