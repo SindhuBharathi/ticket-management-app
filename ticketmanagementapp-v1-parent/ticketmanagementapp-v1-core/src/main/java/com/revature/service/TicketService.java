@@ -1,13 +1,12 @@
 package com.revature.service;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.revature.dao.TicketDAO;
 import com.revature.exception.PersistenceException;
 import com.revature.exception.ServiceException;
 import com.revature.exception.ValidatorException;
+import com.revature.model.Department;
+import com.revature.model.Priority;
 import com.revature.model.Ticket;
 import com.revature.model.TicketList;
 import com.revature.model.User;
@@ -18,9 +17,9 @@ public class TicketService {
 	TicketDAO ticketDAO = new TicketDAO();
 	UserLoginService loginService = new UserLoginService();
 
-	public void create(int userId, String subject, String description) throws ServiceException {
+	public String create(int userId, String subject, String description, int departmentId, int priorityId) throws ServiceException {
 		try {
-			Logger logger = Logger.getLogger(TicketService.class.getName());
+//			Logger logger = Logger.getLogger(TicketService.class.getName());
 			ticketValidator.validateCreate(userId, subject, description);
 			Ticket t = new Ticket();
 			t.setSubject(subject);
@@ -28,19 +27,26 @@ public class TicketService {
 			User u = new User();
 			u.setId(userId);
 			t.setUserId(u);
+			Department d=new Department();
+			d.setId(departmentId);
+			t.setDepartmentId(d);
+			Priority p=new Priority();
+			p.setId(priorityId);
+			t.setPriorityId(p);
 			int ticketId = ticketDAO.create(t);
-			logger.log(Level.INFO, "Ticket created... Ticket id " + ticketId);
+//			logger.log(Level.INFO, "Ticket created... Ticket id " + ticketId);
+			return "Ticket created... Ticket id is "+ticketId;
 		} catch (ValidatorException e) {
-			throw new ServiceException("  ", e);
+			throw new ServiceException("Ticket not created", e);
 		} catch (PersistenceException e) {
 			throw new ServiceException("PE ", e);
 		}
 
 	}
 
-	public void update(int ticketId, int userId, String description) throws ServiceException {
+	public String update(int ticketId, int userId, String description) throws ServiceException {
 		try {
-			Logger logger = Logger.getLogger(TicketService.class.getName());
+//			Logger logger = Logger.getLogger(TicketService.class.getName());
 			ticketValidator.validateUpdate(ticketId, userId, description);
 			Ticket t = new Ticket();
 			t.setId(ticketId);
@@ -49,17 +55,18 @@ public class TicketService {
 			u.setId(userId);
 			t.setUserId(u);
 			ticketDAO.updateTicket(t);
-			logger.log(Level.INFO, "Ticket updated");
+//			logger.log(Level.INFO, "Ticket updated");
+			return "Ticket updated successfully...";
 		} catch (ValidatorException e) {
-			throw new ServiceException(" ", e);
+			throw new ServiceException("Ticket not updated", e);
 		} catch (PersistenceException e) {
 			throw new ServiceException("Wrong", e);
 		}
 	}
 
-	public void close(int ticketId, int userId) throws ServiceException {
+	public String close(int ticketId, int userId) throws ServiceException {
 		try {
-			Logger logger = Logger.getLogger(TicketService.class.getName());
+//			Logger logger = Logger.getLogger(TicketService.class.getName());
 			ticketValidator.validateClose(ticketId, userId);
 			Ticket t = new Ticket();
 			t.setId(ticketId);
@@ -67,15 +74,16 @@ public class TicketService {
 			u.setId(userId);
 			t.setUserId(u);
 			ticketDAO.closeTicket(t);
-			logger.log(Level.INFO, "Ticket closed");
+//			logger.log(Level.INFO, "Ticket closed");
+			return "Ticket closed.";
 		} catch (ValidatorException e) {
-			throw new ServiceException(" ", e);
+			throw new ServiceException("Already closed", e);
 		} catch (PersistenceException e) {
 			throw new ServiceException("Wrong", e);
 		}
 	}
 
-	public void view(int userId) throws ServiceException {
+/*	public void view(int userId) throws ServiceException {
 		try {
 			Logger logger = Logger.getLogger(TicketService.class.getName());
 			List<TicketList> list = ticketDAO.listByUserId(userId);
@@ -88,5 +96,14 @@ public class TicketService {
 		}
 
 	}
+*/
+	public List<TicketList> view(int userId) throws ServiceException {
+		try {
+			return ticketDAO.listByUserId(userId);
+		} catch (PersistenceException e) {
+			throw new ServiceException("Not yet created any ticket", e);
+		}
 
+	}
+	
 }

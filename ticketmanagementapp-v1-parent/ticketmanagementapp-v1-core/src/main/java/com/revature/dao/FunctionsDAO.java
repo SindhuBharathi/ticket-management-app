@@ -66,6 +66,17 @@ public class FunctionsDAO {
 		Object[] params = { ticketId };
 		return jdbcTemplate.queryForObject(sql, params, Integer.class);
 	}
-
+	
+	public int getDepartmentId(String name) {
+		String sql = "select ID from DEPARTMENTS where NAME=?";
+		Object[] params = { name };
+		return jdbcTemplate.queryForObject(sql, params, Integer.class);
+	}
+	
+	public int getPriorityId(String name) {
+		String sql = "select ID from PRIORITIES where NAME=?";
+		Object[] params = { name };
+		return jdbcTemplate.queryForObject(sql, params, Integer.class);
+	}
 
 }

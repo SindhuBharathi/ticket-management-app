@@ -12,8 +12,13 @@ public class TestFunctionsDAO {
 		
 		System.out.println(functionsDAO.getStatus(2));
 */		
-		System.out.println(functionsDAO.getEmployeeId("aaab@gmail.com","aaa"));
+/*		System.out.println(functionsDAO.getEmployeeId("aaab@gmail.com","aaa"));
 		
 		System.out.println(functionsDAO.getEmployeeIdFromTicketId(1));
+		
+*/
+		System.out.println(functionsDAO.getDepartmentId("HR"));
+		
+		System.out.println(functionsDAO.getPriorityId("Low"));
 	}
 }
