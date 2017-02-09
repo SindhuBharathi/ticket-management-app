@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.revature.exception.ServiceException;
+import com.revature.model.Ticket;
 import com.revature.model.TicketList;
+import com.revature.service.EmployeeLoginService;
+import com.revature.service.EmployeeService;
 import com.revature.service.RegisterService;
 import com.revature.service.UserLoginService;
 import com.revature.service.UserService;
@@ -21,9 +24,11 @@ public class UserController {
 	UserLoginService userLoginService = new UserLoginService();
 	RegisterService userRegisterService = new RegisterService();
 	UserService userService = new UserService();
+	EmployeeLoginService employeeLoginService=new EmployeeLoginService();
+	EmployeeService employeeService=new EmployeeService();
 
-	@GetMapping("/login")
-	public String login(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
+	@GetMapping("/userLogin")
+	public String userLogin(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
 			ModelMap modelMap) {
 		try {
 			userLoginService.login(emailId, password);
@@ -90,7 +95,7 @@ public class UserController {
 	}
 
 	@GetMapping("/userViewTickets")
-	public String view(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
+	public String userView(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
 			ModelMap modelMap) {
 		try {
 			List<TicketList> i = userService.view(emailId, password);
@@ -102,4 +107,82 @@ public class UserController {
 		}
 	}
 	
+	@GetMapping("/employeeLogin")
+	public String employeeLogin(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
+			ModelMap modelMap) {
+		try {
+			employeeLoginService.login(emailId, password);
+			return "../employee.jsp";
+
+		} catch (ServiceException e) {
+			modelMap.addAttribute("ERROR", e.getMessage());
+			return "../employeeLogin.jsp";
+		}
+	}
+	
+	@GetMapping("/assign")
+	public String assign(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
+			@RequestParam("ticketId") int ticketId, ModelMap modelMap) {
+		try {
+			String msg=employeeService.assign(emailId, password, ticketId);
+			modelMap.addAttribute("MESSAGE", msg);
+			return "../thanks.jsp";
+		} catch (ServiceException e) {
+			modelMap.addAttribute("ERROR", e.getMessage());
+			return "../employee.jsp";
+		}
+	}
+	
+	@GetMapping("/reAssign")
+	public String reAssign(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
+			@RequestParam("ticketId") int ticketId, @RequestParam("employeeId") int employeeId, ModelMap modelMap) {
+		try {
+			String msg=employeeService.reAssign(emailId, password, ticketId, employeeId);
+			modelMap.addAttribute("MESSAGE", msg);
+			return "../thanks.jsp";
+		} catch (ServiceException e) {
+			modelMap.addAttribute("ERROR", e.getMessage());
+			return "../employee.jsp";
+		}
+	}
+	
+	@GetMapping("/reply")
+	public String reply(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
+			@RequestParam("ticketId") int ticketId, String solution, ModelMap modelMap) {
+		try {
+			String msg=employeeService.reply(emailId, password, ticketId, solution);
+			modelMap.addAttribute("MESSAGE", msg);
+			return "../thanks.jsp";
+		} catch (ServiceException e) {
+			modelMap.addAttribute("ERROR", e.getMessage());
+			return "../employee.jsp";
+		}
+	}
+	
+	@GetMapping("/delete")
+	public String delete(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
+			@RequestParam("ticketId") int ticketId, ModelMap modelMap) {
+		try {
+			String msg=employeeService.delete(emailId, password, ticketId);
+			modelMap.addAttribute("MESSAGE", msg);
+			return "../thanks.jsp";
+		} catch (ServiceException e) {
+			modelMap.addAttribute("ERROR", e.getMessage());
+			return "../employee.jsp";
+		}
+	}
+	
+	@GetMapping("/employeeViewTickets")
+	public String employeeView(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
+			ModelMap modelMap) {
+		try {
+			List<Ticket> i = employeeService.view(emailId, password);
+			modelMap.addAttribute("list", i);
+			return "../employeeViewTicket.jsp";
+		} catch (ServiceException e) {
+			modelMap.addAttribute("ERROR", e.getMessage());
+			return "../employee.jsp";
+		}
+	}
+
 }

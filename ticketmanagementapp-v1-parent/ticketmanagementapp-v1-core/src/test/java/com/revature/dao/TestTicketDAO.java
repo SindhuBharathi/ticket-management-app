@@ -49,10 +49,10 @@ public class TestTicketDAO {
 		
 //		System.out.println(ticketDAO.listByUserId(2));
 		
-/*		List<Ticket> list1 = ticketDAO.listByEmployeeId(2);
+		List<Ticket> list1 = ticketDAO.listByEmployeeId(4);
 		for (Ticket tck : list1)
 			System.out.println(tck);
-*/		
+		
 	}
 
 }

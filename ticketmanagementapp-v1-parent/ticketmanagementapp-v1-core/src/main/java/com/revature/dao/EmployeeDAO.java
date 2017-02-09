@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.mail.EmailException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,11 +18,12 @@ import com.revature.model.Department;
 import com.revature.model.Employee;
 import com.revature.model.Role;
 import com.revature.util.ConnectionUtil;
+import com.revature.util.MailUtil;
 
 public class EmployeeDAO implements DAO<Employee> {
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 	Logger logger = Logger.getLogger(EmployeeDAO.class.getName());
-
+	FunctionsDAO functionsDAO = new FunctionsDAO();
 	@Override
 	public void save(Employee employee) throws PersistenceException {
 		try {
@@ -112,13 +114,15 @@ public class EmployeeDAO implements DAO<Employee> {
 
 	}
 
-	public void assignEmployee(int ticketId) throws PersistenceException {
-		FunctionsDAO functionsDAO = new FunctionsDAO();
+	public void assignEmployee(int ticketId) throws PersistenceException, EmailException {
 		try {
 			int employeeId = functionsDAO.assignEmployeeId(functionsDAO.getDepartmentIdFomTicketId(ticketId));
 			String sql = "update TICKETS set ASSIGNED_EMPLOYEE_ID=?,STATUS='Progress' where ID=? and STATUS='Open'";
 			Object[] params = { employeeId, ticketId };
 			jdbcTemplate.update(sql, params);
+			String employeeEmail=functionsDAO.getEmployeeEmailId(employeeId);
+			int userId=functionsDAO.getUserIdFromTicketId(ticketId);
+			MailUtil.sendSimpleMail(employeeEmail, "User id "+userId+" created ticket with id "+ticketId);
 		} catch (EmptyResultDataAccessException e) {
 			throw new PersistenceException("TicketId not exists", e);
 		}
@@ -134,7 +138,7 @@ public class EmployeeDAO implements DAO<Employee> {
 		}
 	}
 
-	public void employeeReply(int ticketId, String solution) throws PersistenceException {
+	public void employeeReply(int ticketId, String solution) throws PersistenceException, EmailException {
 		try {
 			String sql = "update TICKETS set STATUS='Resolved', RESOLVED_DATETIME=now() where ID=? and STATUS='Progress'";
 			Object[] params = { ticketId };
@@ -142,6 +146,9 @@ public class EmployeeDAO implements DAO<Employee> {
 			String sql2 = "insert into ISSUES (TICKET_ID,SOLUTION) values (?,?)";
 			Object[] params2 = { ticketId, solution };
 			jdbcTemplate.update(sql2, params2);
+			int userId=functionsDAO.getUserIdFromTicketId(ticketId);
+			String email=functionsDAO.getUserEmailId(userId);
+			MailUtil.sendSimpleMail(email,"Ticket id "+ticketId+" has got a reply. Solution: "+solution);
 		} catch (EmptyResultDataAccessException e) {
 			throw new PersistenceException("TicketId not exists", e);
 		}

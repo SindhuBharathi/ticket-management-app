@@ -4,7 +4,7 @@ public class TestMailUtil {
 
 	public static void main(String[] args) {
 		try {
-			MailUtil.sendSimpleMail(null, null, 0);
+			MailUtil.sendSimpleMail(null, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

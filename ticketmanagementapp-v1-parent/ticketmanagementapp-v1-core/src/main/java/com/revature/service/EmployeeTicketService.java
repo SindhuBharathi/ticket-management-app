@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.mail.EmailException;
+
 import com.revature.dao.EmployeeDAO;
 import com.revature.dao.TicketDAO;
 import com.revature.exception.PersistenceException;
@@ -24,9 +26,11 @@ public class EmployeeTicketService {
 			employeeDAO.assignEmployee(ticketId);
 			logger.log(Level.INFO, "Ticket Assigned");
 		} catch (ValidatorException e) {
-			throw new ServiceException(" ", e);
+			throw new ServiceException("Ticket not assigned", e);
 		} catch (PersistenceException e) {
 			throw new ServiceException("Wrong", e);
+		} catch (EmailException e) {
+			throw new ServiceException("Mail not sent", e);
 		}
 	}
 	
@@ -37,7 +41,7 @@ public class EmployeeTicketService {
 			employeeDAO.assignEmployee(ticketId, employeeId);
 			logger.log(Level.INFO, "Ticket reassigned");
 		} catch (ValidatorException e) {
-			throw new ServiceException(" ", e);
+			throw new ServiceException("Ticket not assigned", e);
 		} catch (PersistenceException e) {
 			throw new ServiceException("Wrong", e);
 		}
@@ -50,13 +54,28 @@ public class EmployeeTicketService {
 			employeeDAO.employeeReply(ticketId, solution);
 			logger.log(Level.INFO, "Ticket replied... ");
 		} catch (ValidatorException e) {
-			throw new ServiceException("  ", e);
+			throw new ServiceException("Ticket not replied", e);
 		} catch (PersistenceException e) {
 			throw new ServiceException("PE  ", e);
+		} catch (EmailException e) {
+			throw new ServiceException("Mail not sent", e);
+		}
+	}
+		
+	public void delete(int employeeId, int ticketId) throws ServiceException {
+		try {
+			Logger logger = Logger.getLogger(EmployeeTicketService.class.getName());
+			employeeValidator.validateDeleteTicket(employeeId, ticketId);
+			ticketDAO.updateIsActive(ticketId);
+			logger.log(Level.INFO, "Ticket deleted");
+		} catch (ValidatorException e) {
+			throw new ServiceException("Ticket not deleted", e);
+		} catch (PersistenceException e) {
+			throw new ServiceException("Wrong", e);
 		}
 	}
 	
-	public void view(int employeeId) throws ServiceException {
+/*	public void view(int employeeId) throws ServiceException {
 		try {
 			Logger logger = Logger.getLogger(TicketService.class.getName());
 			List<Ticket> list = ticketDAO.listByEmployeeId(employeeId);
@@ -70,17 +89,12 @@ public class EmployeeTicketService {
 		}
 
 	}
-	
-	public void delete(int employeeId, int ticketId) throws ServiceException {
+*/
+	public List<Ticket> view(int employeeId) throws ServiceException {
 		try {
-			Logger logger = Logger.getLogger(EmployeeTicketService.class.getName());
-			employeeValidator.validateDeleteTicket(employeeId, ticketId);
-			ticketDAO.updateIsActive(ticketId);
-			logger.log(Level.INFO, "Ticket deleted");
-		} catch (ValidatorException e) {
-			throw new ServiceException(" ", e);
+			return ticketDAO.listByEmployeeId(employeeId);
 		} catch (PersistenceException e) {
-			throw new ServiceException("Wrong", e);
+			throw new ServiceException("Employee not exists any ticket", e);
 		}
 	}
 

@@ -15,7 +15,8 @@ public class UserService {
 			FunctionsDAO functionsDAO = new FunctionsDAO();
 			return ticketService.create(functionsDAO.getUserId(emailId, password), subject, description, functionsDAO.getDepartmentId(department), functionsDAO.getPriorityId(priority));
 		}
-		return null;
+		else
+			return null;
 	}
 
 	public String update(String emailId, String password, int ticketId, String description)
@@ -24,7 +25,8 @@ public class UserService {
 			FunctionsDAO functionsDAO = new FunctionsDAO();
 			return ticketService.update(ticketId, functionsDAO.getUserId(emailId, password), description);
 		}
-		return null;
+		else 
+			return null;
 	}
 
 	public String close(String emailId, String password, int ticketId) throws ServiceException {
@@ -32,7 +34,8 @@ public class UserService {
 			FunctionsDAO functionsDAO = new FunctionsDAO();
 			return ticketService.close(ticketId, functionsDAO.getUserId(emailId, password));
 		}
-		return null;
+		else
+			return null;
 	}
 
 /*	public void view(String emailId, String password) throws ServiceException {

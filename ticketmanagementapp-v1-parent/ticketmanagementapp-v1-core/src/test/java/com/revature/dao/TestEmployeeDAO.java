@@ -2,13 +2,15 @@ package com.revature.dao;
 
 import java.util.List;
 
+import org.apache.commons.mail.EmailException;
+
 import com.revature.exception.PersistenceException;
 import com.revature.model.Department;
 import com.revature.model.Employee;
 import com.revature.model.Role;
 
 public class TestEmployeeDAO {
-	public static void main(String[] args) throws PersistenceException {
+	public static void main(String[] args) throws PersistenceException, EmailException {
 		Employee e=new Employee();
 		EmployeeDAO employeeDAO=new EmployeeDAO();
 	
@@ -39,11 +41,11 @@ public class TestEmployeeDAO {
 //		e=employeeDAO.listOneByName("AAA");
 //		System.out.println(e);
 		
-		employeeDAO.assignEmployee(5);
+		employeeDAO.assignEmployee(12);
 		
 //		employeeDAO.assignEmployee(2, 3);
 		
-//		employeeDAO.employeeReply(3, "solution");
+		employeeDAO.employeeReply(3, "solution");
 		
 	}
 }

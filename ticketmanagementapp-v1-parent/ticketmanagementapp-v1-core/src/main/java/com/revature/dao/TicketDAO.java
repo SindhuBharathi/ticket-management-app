@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.mail.EmailException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,23 +19,33 @@ import com.revature.model.Ticket;
 import com.revature.model.TicketList;
 import com.revature.model.User;
 import com.revature.util.ConnectionUtil;
+import com.revature.util.MailUtil;
 
 public class TicketDAO implements DAO<Ticket> {
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 	Logger logger = Logger.getLogger(UserDAO.class.getName());
+	FunctionsDAO functionsDAO=new FunctionsDAO();
 
 	@Override
 	public void save(Ticket t) throws PersistenceException {
 
 	}
 
-	public int create(Ticket ticket) throws PersistenceException {
+	public int create(Ticket ticket) throws PersistenceException, EmailException {
 		try {
 			String sql = "insert into TICKETS (USER_ID,SUBJECT,DESCRIPTION,DEPARTMENT_ID,PRIORITY_ID) values (?,?,?,?,?)";
 			Object[] params = { ticket.getUserId().getId(), ticket.getSubject(), ticket.getDescription(), ticket.getDepartmentId().getId(), ticket.getPriorityId().getId() };
 			jdbcTemplate.update(sql, params);
 			String sql1 = "select last_insert_id()";
-			return jdbcTemplate.queryForObject(sql1, Integer.class);
+			int ticketId=jdbcTemplate.queryForObject(sql1, Integer.class);
+			int userId=functionsDAO.getUserIdFromTicketId(ticketId);
+			int departmentId=functionsDAO.getDepartmentIdFomTicketId(ticketId);
+			String sql2="select ID from EMPLOYEES where DEPARTMENT_ID=? and ROLE_ID=1";
+			Object[] params2={ departmentId };
+			int employeeId=jdbcTemplate.queryForObject(sql2, params2,Integer.class);
+			String email=functionsDAO.getEmployeeEmailId(employeeId);
+			MailUtil.sendSimpleMail(email, "UserId "+userId+" has created a ticket of Id "+ticketId);
+			return ticketId;
 		} catch (DataIntegrityViolationException e) {
 			throw new PersistenceException("User is not registered", e);
 		}
@@ -132,7 +143,7 @@ public class TicketDAO implements DAO<Ticket> {
 	
 	public List<Ticket> listByEmployeeId(int id) throws PersistenceException {
 		try {
-			String sql = "select ID,USER_ID,SUBJECT,DESCRIPTION,DEPARTMENT_ID,PRIORITY_ID,CREATED_DATETIME,RESOLVED_DATETIME,STATUS from TICKETS where ASSIGNED_EMPLOYEE_ID='" + id
+			String sql = "select ID,USER_ID,SUBJECT,DESCRIPTION,DEPARTMENT_ID,PRIORITY_ID,CREATED_DATETIME,RESOLVED_DATETIME,STATUS from TICKETS where ACTIVE=1 and ASSIGNED_EMPLOYEE_ID='" + id
 					+ "'";
 			return jdbcTemplate.query(sql, (rs, rowNo) -> {
 				Ticket t = new Ticket();

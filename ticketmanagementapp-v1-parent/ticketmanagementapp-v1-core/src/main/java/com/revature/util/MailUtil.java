@@ -12,7 +12,7 @@ public class MailUtil {
 		throw new IllegalAccessError("Utility class");
 	}
 
-	public static void sendSimpleMail(String mail, String message, int ticketId) throws EmailException {
+	public static void sendSimpleMail(String mail, String message) throws EmailException {
 		Email email = new SimpleEmail();
 		email.setSmtpPort(587);
 		email.setAuthenticator(new DefaultAuthenticator(MailConstants.emailId, MailConstants.password));
@@ -21,7 +21,7 @@ public class MailUtil {
 		email.setSSLOnConnect(true);
 		email.setFrom(MailConstants.emailId);
 		email.setSubject("Ticket created");
-		email.setMsg("TicketId: "+ticketId+" Message "+message);
+		email.setMsg(message);
 		email.addTo(mail);
 		email.setStartTLSEnabled(true);
 		email.send();

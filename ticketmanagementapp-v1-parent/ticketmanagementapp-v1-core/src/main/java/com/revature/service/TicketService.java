@@ -1,6 +1,9 @@
 package com.revature.service;
 
 import java.util.List;
+
+import org.apache.commons.mail.EmailException;
+
 import com.revature.dao.TicketDAO;
 import com.revature.exception.PersistenceException;
 import com.revature.exception.ServiceException;
@@ -39,6 +42,8 @@ public class TicketService {
 		} catch (ValidatorException e) {
 			throw new ServiceException("Ticket not created", e);
 		} catch (PersistenceException e) {
+			throw new ServiceException("PE ", e);
+		} catch (EmailException e) {
 			throw new ServiceException("PE ", e);
 		}
 

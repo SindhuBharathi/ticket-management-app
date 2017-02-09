@@ -5,6 +5,6 @@ public class MailConstants {
 	{
 		throw new IllegalAccessError("Utility class");
 	}
-	public static final String emailId = "asbkamatchi@gmail.com";
-	public static final String password = "annakaamu";
+	public static final String emailId = "ticketmanagement.tms@gmail.com";
+	public static final String password = "ticket123";
 }

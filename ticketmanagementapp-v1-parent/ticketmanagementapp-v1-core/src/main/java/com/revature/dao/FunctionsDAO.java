@@ -20,6 +20,12 @@ public class FunctionsDAO {
 		Object[] params = { ticketId };
 		return jdbcTemplate.queryForObject(sql, params, Integer.class);
 	}
+	
+	public String getUserEmailId(int userId) {
+		String sql = "select EMAIL_ID from USERS where ID=?";
+		Object[] params = { userId };
+		return jdbcTemplate.queryForObject(sql, params, String.class);
+	}
 
 	public String getStatus(int ticketId) {
 		String sql = "select STATUS from TICKETS where ID=?";
@@ -59,6 +65,12 @@ public class FunctionsDAO {
 		String sql = "select DEPARTMENT_ID from EMPLOYEES where ID=?";
 		Object[] params = { employeeId };
 		return jdbcTemplate.queryForObject(sql, params, Integer.class);
+	}
+	
+	public String getEmployeeEmailId(int employeeId) {
+		String sql = "select EMAIL_ID from EMPLOYEES where ID=?";
+		Object[] params = { employeeId };
+		return jdbcTemplate.queryForObject(sql, params, String.class);
 	}
 	
 	public int getDepartmentIdFomTicketId(int ticketId) {
