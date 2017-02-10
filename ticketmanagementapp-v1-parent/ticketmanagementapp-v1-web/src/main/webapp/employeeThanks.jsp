@@ -9,8 +9,6 @@
 <body>
 ${MESSAGE}
 <br> <br>
-Click here to <a href="../employee.jsp"> User </a> page. <br>
-Click here to <a href="../employeeLogin.jsp"> User Login </a> page. <br>
-Click here to <a href="../index.jsp"> General login </a> page. <br>
+Click here to <a href="../employee.jsp"> Employee </a> page. <br>
 </body>
 </html>

@@ -2,6 +2,8 @@ package com.revature.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.revature.exception.ServiceException;
+import com.revature.model.Employee;
 import com.revature.model.Ticket;
 import com.revature.model.TicketList;
+import com.revature.model.User;
 import com.revature.service.EmployeeLoginService;
 import com.revature.service.EmployeeService;
 import com.revature.service.RegisterService;
@@ -26,12 +30,17 @@ public class TicketController {
 	UserService userService = new UserService();
 	EmployeeLoginService employeeLoginService=new EmployeeLoginService();
 	EmployeeService employeeService=new EmployeeService();
+	User user=new User();
+	Employee employee=new Employee();
 
 	@GetMapping("/userLogin")
 	public String userLogin(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
-			ModelMap modelMap) {
+			ModelMap modelMap, HttpSession session) {
 		try {
 			userLoginService.login(emailId, password);
+			user.setEmailId(emailId);
+			user.setPassword(password);
+			session.setAttribute("USER_LOGGED_IN", user);
 			return "../user.jsp";
 
 		} catch (ServiceException e) {
@@ -53,12 +62,12 @@ public class TicketController {
 	}
 
 	@GetMapping("/create")
-	public String create(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
-			@RequestParam("subject") String subject, @RequestParam("description") String description,
+	public String create(@RequestParam("subject") String subject, @RequestParam("description") String description,
 			@RequestParam("department") String department, @RequestParam("priority") String priority,
-			ModelMap modelMap) {
+			ModelMap modelMap, HttpSession session) {
 		try {
-			String msg=userService.create(emailId, password, subject, description, department, priority);
+			session.getAttribute("USER_LOGGED_IN");
+			String msg=userService.create(user.getEmailId(),user.getPassword(), subject, description, department, priority);
 			modelMap.addAttribute("MESSAGE", msg);
 			return "../userThanks.jsp";
 		} catch (ServiceException e) {
@@ -68,11 +77,11 @@ public class TicketController {
 	}
 	
 	@GetMapping("/update")
-	public String update(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
-			@RequestParam("ticketId") int ticketId, @RequestParam("description") String description,
-			ModelMap modelMap) {
+	public String update(@RequestParam("ticketId") int ticketId, @RequestParam("description") String description,
+			ModelMap modelMap, HttpSession session) {
 		try {
-			String msg=userService.update(emailId, password, ticketId, description);
+			session.getAttribute("USER_LOGGED_IN");
+			String msg=userService.update(user.getEmailId(),user.getPassword(), ticketId, description);
 			modelMap.addAttribute("MESSAGE", msg);
 			return "../userThanks.jsp";
 		} catch (ServiceException e) {
@@ -82,10 +91,10 @@ public class TicketController {
 	}
 	
 	@GetMapping("/close")
-	public String close(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
-			@RequestParam("ticketId") int ticketId, ModelMap modelMap) {
+	public String close(@RequestParam("ticketId") int ticketId, ModelMap modelMap, HttpSession session) {
 		try {
-			String msg=userService.close(emailId, password, ticketId);
+			session.getAttribute("USER_LOGGED_IN");
+			String msg=userService.close(user.getEmailId(),user.getPassword(), ticketId);
 			modelMap.addAttribute("MESSAGE", msg);
 			return "../userThanks.jsp";
 		} catch (ServiceException e) {
@@ -95,10 +104,10 @@ public class TicketController {
 	}
 
 	@GetMapping("/userViewTickets")
-	public String userView(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
-			ModelMap modelMap) {
+	public String userView(ModelMap modelMap, HttpSession session) {
 		try {
-			List<TicketList> i = userService.view(emailId, password);
+			session.getAttribute("USER_LOGGED_IN");
+			List<TicketList> i = userService.view(user.getEmailId(),user.getPassword());
 			modelMap.addAttribute("list", i);
 			return "../userViewTicket.jsp";
 		} catch (ServiceException e) {
@@ -107,11 +116,20 @@ public class TicketController {
 		}
 	}
 	
+	@GetMapping("/userLogout")
+	public String userLogout(HttpSession session) {
+		session.invalidate();
+		return "redirect:../index.jsp";
+	}
+	
 	@GetMapping("/employeeLogin")
 	public String employeeLogin(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
-			ModelMap modelMap) {
+			ModelMap modelMap, HttpSession session) {
 		try {
 			employeeLoginService.login(emailId, password);
+			employee.setEmailId(emailId);
+			employee.setPassword(password);
+			session.setAttribute("EMPLOYEE_LOGGED_IN", employee);
 			return "../employee.jsp";
 
 		} catch (ServiceException e) {
@@ -121,10 +139,10 @@ public class TicketController {
 	}
 	
 	@GetMapping("/assign")
-	public String assign(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
-			@RequestParam("ticketId") int ticketId, ModelMap modelMap) {
+	public String assign(@RequestParam("ticketId") int ticketId, ModelMap modelMap, HttpSession session) {
 		try {
-			String msg=employeeService.assign(emailId, password, ticketId);
+			session.getAttribute("EMPLOYEE_LOGGED_IN");
+			String msg=employeeService.assign(employee.getEmailId(), employee.getPassword(), ticketId);
 			modelMap.addAttribute("MESSAGE", msg);
 			return "../employeeThanks.jsp";
 		} catch (ServiceException e) {
@@ -134,10 +152,10 @@ public class TicketController {
 	}
 	
 	@GetMapping("/reAssign")
-	public String reAssign(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
-			@RequestParam("ticketId") int ticketId, @RequestParam("employeeId") int employeeId, ModelMap modelMap) {
+	public String reAssign(@RequestParam("ticketId") int ticketId, @RequestParam("employeeId") int employeeId, ModelMap modelMap, HttpSession session) {
 		try {
-			String msg=employeeService.reAssign(emailId, password, ticketId, employeeId);
+			session.getAttribute("EMPLOYEE_LOGGED_IN");
+			String msg=employeeService.reAssign(employee.getEmailId(),employee.getPassword(), ticketId, employeeId);
 			modelMap.addAttribute("MESSAGE", msg);
 			return "../employeeThanks.jsp";
 		} catch (ServiceException e) {
@@ -147,10 +165,10 @@ public class TicketController {
 	}
 	
 	@GetMapping("/reply")
-	public String reply(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
-			@RequestParam("ticketId") int ticketId, String solution, ModelMap modelMap) {
+	public String reply(@RequestParam("ticketId") int ticketId, String solution, ModelMap modelMap, HttpSession session) {
 		try {
-			String msg=employeeService.reply(emailId, password, ticketId, solution);
+			session.getAttribute("EMPLOYEE_LOGGED_IN");
+			String msg=employeeService.reply(employee.getEmailId(), employee.getPassword(), ticketId, solution);
 			modelMap.addAttribute("MESSAGE", msg);
 			return "../employeeThanks.jsp";
 		} catch (ServiceException e) {
@@ -160,10 +178,10 @@ public class TicketController {
 	}
 	
 	@GetMapping("/delete")
-	public String delete(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
-			@RequestParam("ticketId") int ticketId, ModelMap modelMap) {
+	public String delete(@RequestParam("ticketId") int ticketId, ModelMap modelMap, HttpSession session) {
 		try {
-			String msg=employeeService.delete(emailId, password, ticketId);
+			session.getAttribute("EMPLOYEE_LOGGED_IN");
+			String msg=employeeService.delete(employee.getEmailId(), employee.getPassword(), ticketId);
 			modelMap.addAttribute("MESSAGE", msg);
 			return "../employeeThanks.jsp";
 		} catch (ServiceException e) {
@@ -173,16 +191,22 @@ public class TicketController {
 	}
 	
 	@GetMapping("/employeeViewTickets")
-	public String employeeView(@RequestParam("emailId") String emailId, @RequestParam("password") String password,
-			ModelMap modelMap) {
+	public String employeeView(ModelMap modelMap, HttpSession session) {
 		try {
-			List<Ticket> i = employeeService.view(emailId, password);
+			session.getAttribute("EMPLOYEE_LOGGED_IN");
+			List<Ticket> i = employeeService.view(employee.getEmailId(),employee.getPassword());
 			modelMap.addAttribute("list", i);
 			return "../employeeViewTicket.jsp";
 		} catch (ServiceException e) {
 			modelMap.addAttribute("ERROR", e.getMessage());
 			return "../employee.jsp";
 		}
+	}
+	
+	@GetMapping("/employeeLogout")
+	public String employeeLogout(HttpSession session) {
+		session.invalidate();
+		return "redirect:../index.jsp";
 	}
 
 }

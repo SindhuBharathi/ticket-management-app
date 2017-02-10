@@ -8,31 +8,24 @@
 </head>
 <body>
 	<h2>Welcome</h2>
-		<form action="/assignTicket.jsp" method="get">
-<!-- 		<input type="text" name="emailId" placeholder="EmailId" required autofocus></input>
-		<input type="text" name="password" placeholder="Password" required></input> 
- -->		<button type="submit"> Assign a ticket </button> <br> <br> <br>
+	<form action="/assignTicket.jsp" method="get">
+		<button type="submit"> Assign a ticket </button> <br> <br> <br>
 	</form>
 	<form action="/reAssignTicket.jsp" method="get">
-<!-- 		<input type="text" name="emailId" placeholder="EmailId" required autofocus></input>
-		<input type="text" name="password" placeholder="Password" required></input>
- -->		<button type="submit"> Re-assign a ticket </button> <br> <br> <br>
+		<button type="submit"> Re-assign a ticket </button> <br> <br> <br>
 	</form>
 	<form action="/replyTicket.jsp" method="get">
-<!-- 		<input type="text" name="emailId" placeholder="EmailId" required autofocus></input>
-		<input type="text" name="password" placeholder="Password" required></input>
- -->		<button type="submit"> Reply a ticket </button> <br> <br> <br>
+		<button type="submit"> Reply a ticket </button> <br> <br> <br>
 	</form>
 	<form action="/deleteTicket.jsp" method="get">
-<!-- 		<input type="text" name="emailId" placeholder="EmailId" required autofocus></input>
-		<input type="text" name="password" placeholder="Password" required></input> 
- -->		<button type="submit"> Delete a ticket </button> <br> <br> <br>
+		<button type="submit"> Delete a ticket </button> <br> <br> <br>
 	</form>
 	<form action="/home/employeeViewTickets" method="get">
-		<input type="text" name="emailId" placeholder="EmailId" required autofocus></input>
-		<input type="password" name="password" placeholder="Password" required></input>
 		<button type="submit"> View </button> <br> <br> <br>
 		<br> ${ERROR} <br>
+	</form>
+	<form action="/home/employeeLogout" method="get">
+		<button type="submit"> Logout </button> <br> <br> <br>
 	</form>
 </body>
 </html>

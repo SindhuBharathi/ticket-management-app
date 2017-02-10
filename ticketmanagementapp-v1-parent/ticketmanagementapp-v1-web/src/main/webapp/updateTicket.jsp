@@ -11,8 +11,6 @@
 		<h3>Update your Ticket</h3>
 		<br> <br>
 		<form action="/home/update" method="GET">
-		<input type="text" name="emailId" placeholder="EmailId" required autofocus></input> <br> <br>
-		<input type="password" name="password" placeholder="Password" required></input> <br> <br>
 		<input type="text" name="ticketId" placeholder="Ticket Id" required /> <br> <br> 
 		<input type="text" name="description" placeholder="Description" required /> <br> <br>		
 		<br> ${ERROR} <br>
