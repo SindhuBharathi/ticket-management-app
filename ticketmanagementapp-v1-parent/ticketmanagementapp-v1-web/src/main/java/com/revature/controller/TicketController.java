@@ -2,6 +2,8 @@ package com.revature.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,7 +62,7 @@ public class TicketController {
 		try {
 			String msg=userService.create(emailId, password, subject, description, department, priority);
 			modelMap.addAttribute("MESSAGE", msg);
-			return "../thanks.jsp";
+			return "../userThanks.jsp";
 		} catch (ServiceException e) {
 			modelMap.addAttribute("ERROR", e.getMessage());
 			return "../user.jsp";
@@ -74,7 +76,7 @@ public class TicketController {
 		try {
 			String msg=userService.update(emailId, password, ticketId, description);
 			modelMap.addAttribute("MESSAGE", msg);
-			return "../thanks.jsp";
+			return "../userThanks.jsp";
 		} catch (ServiceException e) {
 			modelMap.addAttribute("ERROR", e.getMessage());
 			return "../user.jsp";
@@ -87,7 +89,7 @@ public class TicketController {
 		try {
 			String msg=userService.close(emailId, password, ticketId);
 			modelMap.addAttribute("MESSAGE", msg);
-			return "../thanks.jsp";
+			return "../userThanks.jsp";
 		} catch (ServiceException e) {
 			modelMap.addAttribute("ERROR", e.getMessage());
 			return "../user.jsp";
@@ -126,7 +128,7 @@ public class TicketController {
 		try {
 			String msg=employeeService.assign(emailId, password, ticketId);
 			modelMap.addAttribute("MESSAGE", msg);
-			return "../thanks.jsp";
+			return "../employeeThanks.jsp";
 		} catch (ServiceException e) {
 			modelMap.addAttribute("ERROR", e.getMessage());
 			return "../employee.jsp";
@@ -139,7 +141,7 @@ public class TicketController {
 		try {
 			String msg=employeeService.reAssign(emailId, password, ticketId, employeeId);
 			modelMap.addAttribute("MESSAGE", msg);
-			return "../thanks.jsp";
+			return "../employeeThanks.jsp";
 		} catch (ServiceException e) {
 			modelMap.addAttribute("ERROR", e.getMessage());
 			return "../employee.jsp";
@@ -152,7 +154,7 @@ public class TicketController {
 		try {
 			String msg=employeeService.reply(emailId, password, ticketId, solution);
 			modelMap.addAttribute("MESSAGE", msg);
-			return "../thanks.jsp";
+			return "../employeeThanks.jsp";
 		} catch (ServiceException e) {
 			modelMap.addAttribute("ERROR", e.getMessage());
 			return "../employee.jsp";
@@ -165,7 +167,7 @@ public class TicketController {
 		try {
 			String msg=employeeService.delete(emailId, password, ticketId);
 			modelMap.addAttribute("MESSAGE", msg);
-			return "../thanks.jsp";
+			return "../employeeThanks.jsp";
 		} catch (ServiceException e) {
 			modelMap.addAttribute("ERROR", e.getMessage());
 			return "../employee.jsp";

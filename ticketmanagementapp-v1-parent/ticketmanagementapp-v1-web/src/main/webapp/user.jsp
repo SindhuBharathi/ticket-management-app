@@ -29,5 +29,10 @@
 		<button type="submit"> View </button> <br> <br> <br>
 		<br> ${ERROR} <br>
 	</form>
+	<form action="/home/userLogout" method="get">
+<!-- 		<input type="text" name="emailId" placeholder="EmailId" required autofocus></input>
+		<input type="text" name="password" placeholder="Password" required></input>
+ -->		<button type="submit"> Logout </button> <br> <br> <br>
+ 	</form>
 </body>
 </html>
