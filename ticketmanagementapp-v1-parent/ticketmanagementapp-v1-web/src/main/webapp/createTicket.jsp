@@ -23,7 +23,7 @@
 	<br>
 	<form action="/home/create" method="GET">
 		<input type="text" name="emailId" placeholder="EmailId" required
-			autofocus></input> <br> <br> <input type="text"
+			autofocus></input> <br> <br> <input type="password"
 			name="password" placeholder="Password" required></input> <br> <br>
 		<input type="text" name="subject" placeholder="Subject of the ticket"
 			required /> <br> <br> <input type="text"

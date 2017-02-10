@@ -12,7 +12,7 @@
 		<br> <br>
 		<form action="/home/assign" method="GET">
 		<input type="text" name="emailId" placeholder="EmailId" required autofocus></input> <br> <br>
-		<input type="text" name="password" placeholder="Password" required></input> <br> <br>
+		<input type="password" name="password" placeholder="Password" required></input> <br> <br>
 		<input type="text" name="ticketId" placeholder="Ticket ID" required></input> <br> <br>
 		<br> ${ERROR} <br>
 		<br> <br> <input type="submit" name="assignticket" value="OK">
